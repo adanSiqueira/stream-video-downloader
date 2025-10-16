@@ -6,6 +6,7 @@ def download_video(url, output_path):
         'outtmpl': os.path.join(output_path, '%(playlist_index)s - %(title)s.%(ext)s'),
         'format': 'bestvideo[ext=mp4][vcodec^=avc]+bestaudio[ext=m4a]/mp4',
         'merge_output_format': 'mp4',
+        'ffmpeg_location': None
     }
     
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
