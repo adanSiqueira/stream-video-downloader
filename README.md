@@ -63,8 +63,6 @@ stream-video-downloader/
 ├── requirements.txt # Python dependencies
 ├── packages.txt # OS-level dependency (ffmpeg)
 ├── README.md # Project documentation
-└── .streamlit/
-└── config.toml # Optional Streamlit settings
 ```
 
 ## How It Works
