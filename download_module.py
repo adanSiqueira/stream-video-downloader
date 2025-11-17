@@ -6,6 +6,37 @@ import tempfile
 
 
 def convert_json_cookies_to_netscape(json_bytes):
+    """
+    Convert a YouTube/Chrome/Edge JSON cookie export into Netscape cookie format.
+
+    This function accepts multiple cookie formats exported by browser extensions,
+    including:
+        - A raw list of cookie dictionaries
+        - A dict containing {"cookies": [...]}
+        - A JSON string inside a JSON blob (common in some extensions)
+        - Chrome/Edge extension export formats
+
+    It produces a Netscape-compatible cookie file (required by yt-dlp),
+    converting relevant fields such as domain, path, secure flag, expiration
+    timestamp, name, and value.
+
+    Args:
+        json_bytes (bytes):
+            RAW bytes read from a cookie file (uploaded in Streamlit).
+            Must represent a JSON array or dict containing cookie structures.
+
+    Returns:
+        bytes:
+            A UTF-8 encoded string representing the cookie data in Netscape format.
+
+    Raises:
+        ValueError:
+            If the JSON structure cannot be parsed into a known cookie format.
+
+    Notes:
+        - The Netscape format is required for yt-dlp's `--cookies` / `cookiefile`.
+        - Unknown fields are ignored; missing fields are safely defaulted.
+    """
     raw = json_bytes.decode("utf-8")
 
     try:
@@ -47,6 +78,46 @@ def convert_json_cookies_to_netscape(json_bytes):
 
 
 def download_video(url, output_path, cookies_file=None):
+    """
+    Download a YouTube video using yt-dlp with optional authenticated cookies.
+
+    This function:
+        1. Converts an uploaded Streamlit cookie file (.txt or .json) to a
+           temporary Netscape cookie file inside the system's temp directory.
+        2. Configures yt-dlp to use the cookie file if provided.
+        3. Downloads the video using a format that prioritizes
+           AVC/H.264 + M4A audio and merges output into MP4.
+
+    This design is compatible with Streamlit Cloud restrictions—files can only
+    be written inside the temporary directory, not the repository folder.
+
+    Args:
+        url (str):
+            A valid YouTube video URL.
+        output_path (str):
+            Path to a folder where the final video file will be saved.
+        cookies_file (UploadedFile, optional):
+            File uploaded via Streamlit (`st.file_uploader`).
+            Accepts either a `.txt` Netscape cookie file or a `.json` export
+            from browser extensions.
+
+    Returns:
+        None
+            The video is downloaded directly to `output_path`.
+
+    Raises:
+        yt_dlp.utils.DownloadError:
+            If the video cannot be downloaded (blocked, invalid URL, etc.).
+        ValueError:
+            If the cookies file is not in a supported format.
+
+    Notes:
+        - Runs *one* download only (no duplicates).
+        - Ensures predictable formats (AVC video + AAC/M4A audio).
+        - Uses system temp directory for cookie handling:
+              tempfile.gettempdir()
+        - Works identically locally and on Streamlit Cloud.
+    """
 
     # Writable temp folder for Streamlit Cloud
     tmp_dir = tempfile.gettempdir()
