@@ -67,21 +67,56 @@ stream-video-downloader/
 
 ## How It Works
 
-1. The user pastes a video URL into the Streamlit app.  
-2. The backend calls a helper function (`download_video`) that:  
-   - Uses **yt-dlp** to fetch video metadata and formats.  
-   - Downloads both the best video and best audio tracks.  
-   - Merges them automatically into a single **MP4** file using **ffmpeg**.  
-3. The final file is saved and made available locally (on Streamlit Cloud, it’s stored temporarily).  
+The app is split into **two main components** — the Streamlit UI (`app.py`) and the download engine (`downloader.py`).
+Together, they handle URL input, cookie conversion, and safe video downloading using `yt-dlp`.
 
+#### **1. User provides a video URL (and optionally a cookies file)**
+
+Inside the Streamlit interface, the user enters any supported video link and can optionally upload a **cookies file** (`.txt` or `.json`).
+This is useful for downloading **age-restricted or region-locked videos**.
+
+#### **2. Cookies (if provided) are normalized**
+
+When a `.json` cookies file is uploaded:
+
+* The function `convert_json_cookies_to_netscape()`
+  converts it into the **Netscape cookie format**, which is required by `yt-dlp`.
+* Both `.txt` and `.json` cookies are written to a **temporary, writable directory**,
+  ensuring compatibility with Streamlit Cloud’s filesystem.
+
+#### **3. The download engine prepares yt-dlp**
+
+The `download_video()` function builds the `yt_dlp` configuration:
+
+* Saves files using an output template based on the video title
+* Selects the best **MP4-compatible** video stream (AVC/H.264)
+* Selects the best **M4A audio** stream
+* Ensures automatic merging into a single **MP4** file
+* Injects the converted cookie file when needed
+
+This guarantees compatibility across browsers and platforms.
+
+#### **4. yt-dlp downloads and merges video/audio**
+
+`yt-dlp`:
+
+1. Fetches metadata
+2. Downloads the chosen video and audio formats
+3. Uses **ffmpeg** to safely merge them into a final MP4
+4. Saves the output inside your chosen folder (`downloads/` by default)
+
+#### **5. Streamlit presents the final file**
+
+After the backend finishes:
+
+* The file appears in the UI
+* Streamlit provides a button so the user can **download the MP4 directly**
 ---
 
 ## Future Improvements
-
-- Add download progress tracking.  
+ 
 - Allow user to choose resolution or format (e.g., **MP3**, **720p**, etc.).  
 - Store downloaded files temporarily and provide a direct download link.  
-- Add validation for unsupported links or restricted content.  
 
 ---
 
@@ -93,3 +128,5 @@ stream-video-downloader/
 ---
 
 If you like this project, don’t forget to ⭐ **star the repository** to show your support!
+
+
