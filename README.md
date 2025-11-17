@@ -18,7 +18,8 @@
   <strong> Link:</strong>  
   <a href="https://stream-video-downloader.streamlit.app/">
     https://stream-video-downloader.streamlit.app/
-  </a>
+  </a><br>
+  Simply paste a video URL (like a YouTube link) and click <strong>Download</strong>.
 </p>
 
 ---
@@ -42,16 +43,6 @@ It wraps the power of `yt-dlp` in a clean, intuitive web interface, enabling use
 
 ---
 
-## Live Application
-
-You can access the app right now:
-
-👉 **[Stream Video Downloader - Live on Streamlit Cloud](https://stream-video-downloader.streamlit.app/)**  
-
-Simply paste a video URL (like a YouTube link) and click **Download**.
-
----
-
 ## Stack
 
 | Layer | Technology | Description |
@@ -72,8 +63,6 @@ stream-video-downloader/
 ├── requirements.txt # Python dependencies
 ├── packages.txt # OS-level dependency (ffmpeg)
 ├── README.md # Project documentation
-└── .streamlit/
-└── config.toml # Optional Streamlit settings
 ```
 
 ## How It Works
