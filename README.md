@@ -1,5 +1,6 @@
 <div align="center">
-<h1>stream-video-downloader</h1>
+
+# stream-video-downloader
 
 <br/>
 
@@ -11,7 +12,6 @@
 ![Vite](https://img.shields.io/badge/Vite-Build-purple?logo=vite)
 ![yt--dlp](https://img.shields.io/badge/yt--dlp-Downloader-red)
 ![License](https://img.shields.io/badge/License-MIT-green)
-
 </div>
 
 ---
